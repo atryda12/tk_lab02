@@ -45,10 +45,10 @@ choice_instr : IF '(' condition ')' instruction
              | IF '(' error ')' instruction ELSE instruction
 
 while_instr : WHILE '(' condition ')' instruction
-while_instr : WHILE '(' error ')' instruction
+            | WHILE '(' error ')' instruction
 
 repeat_instr : REPEAT instructions UNTIL condition ';'
-return_instr : RETURN expression ';'
+             | RETURN expression ';'
 
 continue_instr : CONTINUE ';'
 
