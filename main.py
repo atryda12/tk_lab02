@@ -17,4 +17,5 @@ if __name__ == '__main__':
     parser = yacc.yacc(module=Cparser)
     text = file.read()
     ast = parser.parse(text, lexer=Cparser.scanner)
+    print(str(ast))
 

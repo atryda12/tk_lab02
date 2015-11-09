@@ -3,6 +3,11 @@ class Node(object):
         return self.printTree()
 
 
+class Program(Node):
+    def __init__(self, components):
+        self.components = components
+
+
 class Declaration(Node):
     def __init__(self, type_name, initialisations):
         self.type_name = type_name
@@ -56,6 +61,11 @@ class ReturnInstruction(Node):
         self.expression = expression
 
 
+class LoopInstruction(Node):
+    def __init__(self, instruction):
+        self.instruction = instruction
+
+
 class BinExpr(Node):
     def __init__(self, op, left, right):
         self.op = op
@@ -88,9 +98,14 @@ class FunctionArgument(Node):
         self.argument = argument
 
 
-# class Const(Node):
-#     pass
-#     #...
+class Const(Node):
+    def __init__(self, value):
+        self.value = value
+
+
+class CompoundInstruction(Node):
+    def __init__(self, instructions):
+        self.instructions = instructions
 #
 # class Integer(Const):
 #     pass
