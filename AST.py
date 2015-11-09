@@ -69,6 +69,11 @@ class FunctionCall(Node):
         self.arguments = arguments
 
 
+class JustID(Node):
+    def __init__(self, identifier):
+        self.identifier = identifier
+
+
 class FunctionDefinition(Node):
     def __init__(self, return_type, function_name, arguments, compound_instr):
         self.return_type = return_type

@@ -129,7 +129,7 @@ class Cparser(object):
 
     def p_return_instr(self, p):
         """return_instr : RETURN expression ';' """
-        p[0] = str(AST.RepeatInstruction(p[2]))
+        p[0] = str(AST.ReturnInstruction(p[2]))
 
     def p_continue_instr(self, p):
         """continue_instr : CONTINUE ';' """
@@ -184,13 +184,13 @@ class Cparser(object):
                       | ID '(' expr_list_or_empty ')'
                       | ID '(' error ')' """
         if len(p) == 5:
-            p[0] = AST.FunctionCall(p[1], p[3])
+            p[0] = str(AST.FunctionCall(p[1], p[3]))
         elif len(p) == 4 and p[1] == '(':
             p[0] = p[2]
         elif len(p) == 4:
-            p[0] = AST.BinOpExpr(p[2], p[1], p[3])
+            p[0] = str(AST.BinExpr(p[2], p[1], p[3]))
         else:
-            p[0] = AST.Initialisation(p[1])
+            p[0] = str(AST.JustID(p[1]))
 
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list
@@ -204,7 +204,7 @@ class Cparser(object):
 
     def p_fundef(self, p):
         """fundef : TYPE ID '(' args_list_or_empty ')' compound_instr """
-        p[0] = AST.FunDefinition(p[1], p[3], p[3], p[5])
+        p[0] = str(AST.FunctionDefinition(p[1], p[2], p[4], p[6]))
 
     def p_args_list_or_empty(self, p):
         """args_list_or_empty : args_list
@@ -218,4 +218,4 @@ class Cparser(object):
 
     def p_arg(self, p):
         """arg : TYPE ID """
-        p[0] = AST.FunArgs(p[1], p[2])
+        p[0] = str(AST.FunctionArgument(p[1], p[2]))

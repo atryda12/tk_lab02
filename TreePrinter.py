@@ -46,14 +46,19 @@ class TreePrinter:
 
     @addToClass(AST.Assignment)
     def printTree(self):
-        output_string = "=\n| " + self.variable_name + '\n'
+        output_string = "=\n| " + self.name + '\n'
         output_string += shift(self.expression)
         return output_string
     
     @addToClass(AST.ChoiceInstruction)
     def printTree(self):
-        # TODO ...
-        pass
+        output_string = "IF\n"
+        output_string += shift(self.condition)
+        output_string += shift(self.if_instruction)
+        if self.else_instruction:
+            output_string += "ELSE\n"
+            output_string += shift(self.else_instruction)
+        return output_string
 
     @addToClass(AST.WhileInstruction)
     def printTree(self):
@@ -64,8 +69,11 @@ class TreePrinter:
 
     @addToClass(AST.RepeatInstruction)
     def printTree(self):
-        # TODO ...
-        pass
+        output_string = "REPEAT\n"
+        output_string += shift(self.instructions)
+        output_string += "UNTIL\n"
+        output_string += shift(self.condition)
+        return output_string
     
     @addToClass(AST.ReturnInstruction)
     def printTree(self):
@@ -86,6 +94,10 @@ class TreePrinter:
             output_string = "FUNCALL\n| " + self.function_name + "\n"
             output_string += shift(self.arguments)
             return output_string
+
+    @addToClass(AST.JustID)
+    def printTree(self):
+        return self.identifier
 
     @addToClass(AST.FunctionDefinition)
     def printTree(self):

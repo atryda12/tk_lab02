@@ -35,7 +35,7 @@ class Scanner(object):
     }
 
     tokens = ["AND", "OR", "EQ", "NEQ", "LE", "GE", "SHL", "SHR",
-              "ID", "TYPE", "INTEGER", "FLOAT", "STRING"] + list(reserved.values())
+              "TYPE", "ID", "INTEGER", "FLOAT", "STRING"] + list(reserved.values())
 
     # special tokens definitions
 
@@ -72,13 +72,13 @@ class Scanner(object):
     t_SHL = r"<<"
     t_SHR = r">>"
 
+    def t_TYPE(self, t):
+        r"\b(int|float|string)\b"
+        return t
+
     def t_ID(self, t):
         r"[a-zA-Z_]\w*"
         t.type = Scanner.reserved.get(t.value, 'ID')
-        return t
-
-    def t_TYPE(self, t):
-        r"\b(int|float|string)\b"
         return t
 
     def t_INTEGER(self, t):
