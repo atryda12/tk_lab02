@@ -57,7 +57,6 @@ class ReturnInstruction(Node):
 
 
 class BinExpr(Node):
-
     def __init__(self, op, left, right):
         self.op = op
         self.left = left
