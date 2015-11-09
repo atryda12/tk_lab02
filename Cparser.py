@@ -5,7 +5,6 @@ import AST
 
 
 class Cparser(object):
-
     def __init__(self):
         self.scanner = Scanner()
         self.scanner.build()
@@ -29,7 +28,8 @@ class Cparser(object):
 
     def p_error(self, p):
         if p:
-            print("Syntax error at line {0}, column {1}: LexToken({2}, '{3}')".format(p.lineno, self.scanner.find_tok_column(p), p.type, p.value))
+            print("Syntax error at line {0}, column {1}: LexToken({2}, '{3}')"
+                  .format(p.lineno, self.scanner.find_tok_column(p), p.type, p.value))
         else:
             print("Unexpected end of input")
 
@@ -52,7 +52,7 @@ class Cparser(object):
         p[0] = p[1]
 
     def p_instruction_component(self, p):
-        """component    : declaration
+        """instruction_component    : declaration
                         | instruction """
         p[0] = p[1]
 
@@ -107,7 +107,6 @@ class Cparser(object):
         """labeled_instr : ID ':' instruction """
         p[0] = str(AST.LabeledInstruction(p[1], p[3]))
 
-
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
         p[0] = str(AST.Assignment(p[1], p[3]))
@@ -119,12 +118,10 @@ class Cparser(object):
                         | IF '(' error ')' instruction ELSE instruction """
         p[0] = str(AST.ChoiceInstruction(*p[3::2]))
 
-
     def p_while_instr(self, p):
         """while_instr : WHILE '(' condition ')' instruction
                        | WHILE '(' error ')' instruction """
-        p[0] = str(AST.WhileInstruction(p[2], p[4]))
-
+        p[0] = str(AST.WhileInstruction(p[3], p[5]))
 
     def p_repeat_instr(self, p):
         """repeat_instr : REPEAT instructions UNTIL condition ';' """
@@ -143,18 +140,23 @@ class Cparser(object):
         p[0] = "BREAK\n"
 
     def p_compound_instr(self, p):
-        """compound_instr : '{' declarations instructions_opt '}' """
+        """compound_instr : '{' instruction_components '}' """
+        p[0] = p[2]
 
+    def p_intruction_components(self, p):
+        """instruction_components : instruction_components instruction_component
+                                   | instruction_component"""
+        p[0] = p[1] if len(p) == 2 else p[1] + p[2]
 
     def p_condition(self, p):
         """condition : expression"""
-
+        p[0] = p[1]
 
     def p_const(self, p):
         """const : INTEGER
                  | FLOAT
                  | STRING"""
-
+        p[0] = p[1]
 
     def p_expression(self, p):
         """expression : const
@@ -181,39 +183,39 @@ class Cparser(object):
                       | '(' error ')'
                       | ID '(' expr_list_or_empty ')'
                       | ID '(' error ')' """
-
+        if len(p) == 5:
+            p[0] = AST.FunctionCall(p[1], p[3])
+        elif len(p) == 4 and p[1] == '(':
+            p[0] = p[2]
+        elif len(p) == 4:
+            p[0] = AST.BinOpExpr(p[2], p[1], p[3])
+        else:
+            p[0] = AST.Initialisation(p[1])
 
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list
                               | """
-
+        p[0] = "" if len(p) == 1 else p[1]
 
     def p_expr_list(self, p):
         """expr_list : expr_list ',' expression
                      | expression """
-
-
-    def p_fundefs_opt(self, p):
-        """fundefs_opt : fundefs
-                       | """
-
-    def p_fundefs(self, p):
-        """fundefs : fundefs fundef
-                   | fundef """
-
+        p[0] = p[1] if len(p) == 2 else p[1] + '\n' + p[3]
 
     def p_fundef(self, p):
         """fundef : TYPE ID '(' args_list_or_empty ')' compound_instr """
-
+        p[0] = AST.FunDefinition(p[1], p[3], p[3], p[5])
 
     def p_args_list_or_empty(self, p):
         """args_list_or_empty : args_list
                               | """
+        p[0] = "" if len(p) == 1 else p[1]
 
     def p_args_list(self, p):
         """args_list : args_list ',' arg
                      | arg """
+        p[0] = p[1] if len(p) == 2 else p[1] + p[3]
 
     def p_arg(self, p):
         """arg : TYPE ID """
-
+        p[0] = AST.FunArgs(p[1], p[2])

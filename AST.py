@@ -56,11 +56,6 @@ class ReturnInstruction(Node):
         self.expression = expression
 
 
-
-
-
-
-
 class BinExpr(Node):
 
     def __init__(self, op, left, right):
@@ -69,32 +64,47 @@ class BinExpr(Node):
         self.right = right
 
 
-class Const(Node):
-    pass
-    #...
-
-class Integer(Const):
-    pass
-    #...
+class FunctionCall(Node):
+    def __init__(self, function_name, arguments):
+        self.function_name = function_name
+        self.arguments = arguments
 
 
-class Float(Const):
-    pass
-    #...
+class FunctionDefinition(Node):
+    def __init__(self, return_type, function_name, arguments, compound_instr):
+        self.return_type = return_type
+        self.function_name = function_name
+        self.arguments = arguments
+        self.compound_instr = compound_instr
 
 
-class String(Const):
-    pass
-    #...
+class FunctionArgument(Node):
+    def __init__(self, argument_type, argument):
+        self.argument_type = argument_type
+        self.argument = argument
 
 
-class Variable(Node):
-    pass
-    #...
-
-
-
-
-# ...
+# class Const(Node):
+#     pass
+#     #...
+#
+# class Integer(Const):
+#     pass
+#     #...
+#
+#
+# class Float(Const):
+#     pass
+#     #...
+#
+#
+# class String(Const):
+#     pass
+#     #...
+#
+#
+# class Variable(Node):
+#     pass
+#     #...
 
 
