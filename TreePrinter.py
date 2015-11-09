@@ -8,7 +8,6 @@ def addToClass(cls):
     return decorator
 
 def indent(expression):
-# TODO zjebalem wprost od Grochala, mozemy chociaz zmienic nazwe :P
     output_string = ""
     for line in str(expression).split('\n'):
         output_string += "" if len(line) == 0 else "| " + line + '\n'
