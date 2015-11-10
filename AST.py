@@ -106,24 +106,4 @@ class Const(Node):
 class CompoundInstruction(Node):
     def __init__(self, instructions):
         self.instructions = instructions
-#
-# class Integer(Const):
-#     pass
-#     #...
-#
-#
-# class Float(Const):
-#     pass
-#     #...
-#
-#
-# class String(Const):
-#     pass
-#     #...
-#
-#
-# class Variable(Node):
-#     pass
-#     #...
-
 
