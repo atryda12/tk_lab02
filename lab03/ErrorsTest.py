@@ -13,13 +13,14 @@ def read_file(fpath):
         return f.read()
 
 
-def capture():
-    oldout = sys.stdout
-    try:
+class capture:
+    def __enter__(self):
+        self.oldout = sys.stdout
         newout = sys.stdout = StringIO()
-        yield newout
-    finally:
-        sys.stdout = oldout
+        return newout
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        sys.stdout = self.oldout
 
 
 class ErrorsTest(unittest.TestCase):
