@@ -1,0 +1,12 @@
+
+int a = 0, b = 0, c = 0;
+
+int fact(int n) {
+  string s = "";
+  if(n==0) return s;
+  else if(n==1) return s;
+  else return n*fact(n-1);
+}
+
+print fact(10);
+

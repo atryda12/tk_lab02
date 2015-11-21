@@ -1,0 +1,15 @@
+
+int a = 0, b = 0, c = 0;
+
+int gcd_iter(int a, int b) {
+    int c = 0;
+
+    while( a != 0 ) {
+        c = a;
+        a = b % a;
+        b = c;
+    }
+}
+
+print gcd_iter(125,100);
+

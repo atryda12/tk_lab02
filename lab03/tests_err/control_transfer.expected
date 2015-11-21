@@ -1,0 +1,4 @@
+
+Error: continue instruction outside a loop: line 6
+Error: break instruction outside a loop: line 12
+Error: return instruction outside a function: line 17

@@ -1,0 +1,20 @@
+
+int r=0;
+
+string greet(string name)
+{
+    continue;
+    return "Hey, " + name;
+}
+
+int inc(int n)
+{
+    break;
+    return n+1;
+}
+
+
+return r;
+
+print greet("world");
+print inc(0);

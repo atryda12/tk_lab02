@@ -1,0 +1,9 @@
+
+int a = 0, b = 0, c = 0;
+
+int trib(int n) {
+    return nbonacci(n,3);
+}
+
+print trib(10);
+

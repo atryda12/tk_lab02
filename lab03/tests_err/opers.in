@@ -1,0 +1,10 @@
+
+string s="", t="";
+string u="";
+int x="";
+
+u = s-t;
+u = s/t;
+
+
+

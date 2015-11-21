@@ -1,0 +1,3 @@
+
+Error: Function identifier 'pow' used as a variable: line 6
+Error: Variable 'res' undefined in current scope: line 8
