@@ -16,9 +16,10 @@ class Declaration(Node):
 
 
 class Initialisation(Node):
-    def __init__(self, name, expression):
+    def __init__(self, name, expression, lineno):
         self.name = name
         self.expression = expression
+        self.lineno = lineno
 
 
 class PrintInstruction(Node):
@@ -34,9 +35,10 @@ class LabeledInstruction(Node):
 
 
 class Assignment(Node):
-    def __init__(self, name, expression):
+    def __init__(self, name, expression, lineno):
         self.name = name
         self.expression = expression
+        self.lineno = lineno
 
 
 class ChoiceInstruction(Node):
@@ -59,31 +61,34 @@ class RepeatInstruction(Node):
 
 
 class ReturnInstruction(Node):
-    def __init__(self, expression):
+    def __init__(self, expression, lineno):
         self.expression = expression
+        self.lineno = lineno
 
 
 class ContinueInstruction(Node):
-    def __init__(self):
-        pass
+    def __init__(self, lineno):
+        self.lineno = lineno
 
 
 class BreakInstruction(Node):
-    def __init__(self):
-        pass
+    def __init__(self, lineno):
+        self.lineno = lineno
 
 
 class BinExpr(Node):
-    def __init__(self, op, left, right):
+    def __init__(self, op, left, right, lineno):
         self.op = op
         self.left = left
         self.right = right
+        self.lineno = lineno
 
 
 class FunctionCall(Node):
-    def __init__(self, function_name, arguments):
+    def __init__(self, function_name, arguments, lineno):
         self.function_name = function_name
         self.arguments = arguments
+        self.lineno = lineno
 
 
 class JustID(Node):
@@ -92,11 +97,12 @@ class JustID(Node):
 
 
 class FunctionDefinition(Node):
-    def __init__(self, return_type, function_name, arguments, compound_instr):
+    def __init__(self, return_type, function_name, arguments, compound_instr, lineno):
         self.return_type = return_type
         self.function_name = function_name
         self.arguments = arguments
         self.compound_instr = compound_instr
+        self.lineno = lineno
 
 
 class FunctionArgument(Node):
@@ -126,7 +132,8 @@ class String(Const):
 
 
 class CompoundInstruction(Node):
-    def __init__(self, instructions):
+    def __init__(self, instructions, end_lineno):
         self.instructions = instructions
         self.children = instructions
+        self.end_lineno = end_lineno
 

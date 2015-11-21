@@ -4,7 +4,7 @@ import ply.yacc as yacc
 from lab03.Cparser import Cparser
 # required for printing to work
 from lab03.TreePrinter import TreePrinter
-from lab03.TypeChecker import TypeChecker
+# from lab03.TypeChecker import TypeChecker
 
 if __name__ == '__main__':
 
@@ -21,5 +21,5 @@ if __name__ == '__main__':
 
     ast = parser.parse(text, lexer=Cparser.scanner)
     print(str(ast))
-    typeChecker = TypeChecker()
+    #typeChecker = TypeChecker()
     # typeChecker.visit(ast)   # or alternatively ast.accept(typeChecker)

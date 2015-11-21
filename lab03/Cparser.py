@@ -64,7 +64,7 @@ class Cparser(object):
 
     def p_init(self, p):
         """init : ID '=' expression """
-        p[0] = AST.Initialisation(p[1], p[3])
+        p[0] = AST.Initialisation(p[1], p[3], p.lineno(1))
 
     def p_instructions(self, p):
         """instructions : instructions instruction
@@ -96,7 +96,7 @@ class Cparser(object):
 
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
-        p[0] = AST.Assignment(p[1], p[3])
+        p[0] = AST.Assignment(p[1], p[3], p.lineno(1))
 
     def p_choice_instr(self, p):
         """choice_instr : IF '(' condition ')' instruction  %prec IFX
@@ -116,19 +116,19 @@ class Cparser(object):
 
     def p_return_instr(self, p):
         """return_instr : RETURN expression ';' """
-        p[0] = AST.ReturnInstruction(p[2])
+        p[0] = AST.ReturnInstruction(p[2], p.lineno(1))
 
     def p_continue_instr(self, p):
         """continue_instr : CONTINUE ';' """
-        p[0] = AST.ContinueInstruction()
+        p[0] = AST.ContinueInstruction(p.lineno(1))
 
     def p_break_instr(self, p):
         """break_instr : BREAK ';' """
-        p[0] = AST.BreakInstruction()
+        p[0] = AST.BreakInstruction(p.lineno(1))
 
     def p_compound_instr(self, p):
         """compound_instr : '{' instruction_components '}' """
-        p[0] = AST.CompoundInstruction(p[2])
+        p[0] = AST.CompoundInstruction(p[2], p.lineno(3))
 
     def p_intruction_components(self, p):
         """instruction_components : instruction_components instruction_component
@@ -185,11 +185,11 @@ class Cparser(object):
                       | ID '(' expr_list_or_empty ')'
                       | ID '(' error ')' """
         if len(p) == 5:
-            p[0] = AST.FunctionCall(p[1], p[3])
+            p[0] = AST.FunctionCall(p[1], p[3], p.lineno(1))
         elif len(p) == 4 and p[1] == '(':
             p[0] = p[2]
         elif len(p) == 4:
-            p[0] = AST.BinExpr(p[2], p[1], p[3])
+            p[0] = AST.BinExpr(p[2], p[1], p[3], p.lineno(1))
         else:
             p[0] = AST.JustID(p[1]) if type(p[1]) is str else p[1]
 
@@ -205,7 +205,7 @@ class Cparser(object):
 
     def p_fundef(self, p):
         """fundef : TYPE ID '(' args_list_or_empty ')' compound_instr """
-        p[0] = AST.FunctionDefinition(p[1], p[2], p[4], p[6])
+        p[0] = AST.FunctionDefinition(p[1], p[2], p[4], p[6], p.lineno(1))
 
     def p_args_list_or_empty(self, p):
         """args_list_or_empty : args_list

@@ -61,7 +61,7 @@ class SymbolTable(object):
             else:
                 return None
 
-    def searchFunctionScope(self):
+    def isInFunctionScope(self):
         if self.name.startswith("function"):
             return self
         else:
