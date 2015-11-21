@@ -120,11 +120,11 @@ class Cparser(object):
 
     def p_continue_instr(self, p):
         """continue_instr : CONTINUE ';' """
-        p[0] = AST.LoopInstruction("CONTINUE")
+        p[0] = AST.ContinueInstruction()
 
     def p_break_instr(self, p):
         """break_instr : BREAK ';' """
-        p[0] = AST.LoopInstruction("BREAK")
+        p[0] = AST.BreakInstruction()
 
     def p_compound_instr(self, p):
         """compound_instr : '{' instruction_components '}' """
@@ -140,10 +140,24 @@ class Cparser(object):
         p[0] = p[1]
 
     def p_const(self, p):
-        """const : INTEGER
-                 | FLOAT
-                 | STRING"""
-        p[0] = AST.Const(p[1])
+        """const : integer
+                 | float
+                 | string"""
+        p[0] = p[1]
+
+    def p_integer(self, p):
+        """integer : INTEGER"""
+        p[0] = AST.Integer(p[1])
+
+
+    def p_float(self, p):
+        """float : FLOAT"""
+        p[0] = AST.Float(p[1])
+
+
+    def p_string(self, p):
+        """string : STRING"""
+        p[0] = AST.String(p[1])
 
     def p_expression(self, p):
         """expression : const

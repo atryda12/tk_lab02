@@ -2,7 +2,9 @@ import sys
 
 import ply.yacc as yacc
 
-from Cparser import Cparser
+from lab02.Cparser import Cparser
+from lab02.TreePrinter import TreePrinter
+
 
 if __name__ == '__main__':
 

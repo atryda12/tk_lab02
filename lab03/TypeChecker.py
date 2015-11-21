@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+import lab03.AST as AST
 
 
 class NodeVisitor(object):
@@ -8,7 +8,6 @@ class NodeVisitor(object):
         method = 'visit_' + node.__class__.__name__
         visitor = getattr(self, method, self.generic_visit)
         return visitor(node)
-
 
     def generic_visit(self, node):        # Called if no explicit visitor function exists for a node.
         if isinstance(node, list):
@@ -24,10 +23,9 @@ class NodeVisitor(object):
                     self.visit(child)
 
     # simpler version of generic_visit, not so general
-    #def generic_visit(self, node):
+    # def generic_visit(self, node):
     #    for child in node.children:
     #        self.visit(child)
-
 
 
 class TypeChecker(NodeVisitor):
