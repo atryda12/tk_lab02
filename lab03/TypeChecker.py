@@ -87,7 +87,7 @@ class TypeChecker(NodeVisitor):
         initialisation_type = self.visit(node.expression)
         definition = self.symbol_table.searchInScopes(node.name)
         if definition is not None and isinstance(definition, FunctionSymbol):
-            message = "Function identifier '{}' used as variable".format(node.name)
+            message = "Function identifier '{}' used as a variable".format(node.name)
             self.log_error(message, node.lineno)
         elif self.symbol_table.get(node.name):
             message = "Variable '{}' already declared".format(node.name)
@@ -193,7 +193,7 @@ class TypeChecker(NodeVisitor):
     def visit_FunctionDefinition(self, node):
         symbol = self.symbol_table.searchInScopes(node.function_name)
         if isinstance(symbol, FunctionSymbol):
-            message = "Redefinition  of function '{}'".format(node.function_name)
+            message = "Redefinition of function '{}'".format(node.function_name)
             self.log_error(message, node.lineno)
         elif isinstance(symbol, VariableSymbol):
             message = "Variable identifier '{}' used as function name".format(node.function_name)
@@ -201,7 +201,8 @@ class TypeChecker(NodeVisitor):
         else:
             return_instructions = node.compound_instr.flatten()
             if not return_instructions:
-                self.log_error("Missing return statement", node.compound_instr.end_lineno)
+                message = "Missing return statement in function '{}' returning {}".format(node.function_name, node.return_type)
+                self.log_error(message, node.compound_instr.end_lineno)
             function_symbol = FunctionSymbol(node.function_name, node.return_type)
             self.symbol_table.put(node.function_name, function_symbol)
             self.enter_scope("function-scope")
@@ -220,6 +221,22 @@ class TypeChecker(NodeVisitor):
             self.symbol_table.function_symbol.add_argument(node.argument_type)
 
     def visit_FunctionCall(self, node):
-        pass
-
+        definition = self.symbol_table.searchInScopes(node.function_name)
+        if definition is None or not isinstance(definition, FunctionSymbol):
+            message = "Call of undefined function: '{}'".format(node.function_name)
+            self.log_error(message, node.lineno)
+        else:
+            if len(node.arguments) != len(definition.arguments):
+                message = "Improper number of args in {} call".format(node.function_name)
+                self.log_error(message, node.lineno)
+            else:
+                for i in range(len(node.arguments)):
+                    arg_type = definition.arguments[i]
+                    given_type = self.visit(node.arguments[i])
+                    if ttype['='][arg_type][given_type] is None:
+                        message = "Improper type of args in {} call".format(node.function_name)
+                        self.log_error(message, node.lineno)
+                        break
+                    self.log_precision_loss_if_needed(arg_type, given_type, node.lineno)
+        return None if definition is None else definition.type
 

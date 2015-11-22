@@ -1,2 +1,2 @@
 
-Error: Call of undefined fun: 'nbonacci': line 5
+Error: Call of undefined function: 'nbonacci': line 5

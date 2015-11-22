@@ -22,7 +22,7 @@ class capture:
     def __exit__(self, exc_type, exc_val, exc_tb):
         sys.stdout = self.oldout
 
-
+unittest.TestCase.maxDiff = None
 class ErrorsTest(unittest.TestCase):
     pass
 
@@ -40,7 +40,12 @@ def generate_test_function(test_input, expected):
             actual = outstream.getvalue()
 
         # then
-        self.assertEqual(expected.strip(), actual.strip())
+        try:
+            self.assertEqual(expected.strip(), actual.strip())
+        except AssertionError as e:
+            print(actual.strip())
+            print(expected.strip())
+            raise e
     return test
 
 def generate_tests(path):

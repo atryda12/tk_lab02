@@ -3,9 +3,10 @@ Error: Improper number of args in gcd call: line 9
 Error: Improper number of args in gcd call: line 11
 Error: Improper type of args in gcd call: line 21
 Error: Improper returned type, expected int, got string: line 26
-Error: Improper returned type, expected int, got string: line 27
-Error: Call of undefined fun: 'nbonacci': line 32
+Warning: possible percision loss: assigning float to int: line 27
+Error: Call of undefined function: 'nbonacci': line 32
 Error: Redefinition of function 'trib': line 35
 Error: Function identifier 'pow' used as a variable: line 49
 Error: Variable 'res' undefined in current scope: line 51
 Error: Missing return statement in function 'gcd_iter' returning int: line 65
+Error: Call of undefined function: 'gcd2': line 68
