@@ -27,6 +27,22 @@ class ErrorsTest(unittest.TestCase):
     pass
 
 
+def generate_test_function(test_input, expected):
+    def test(self):
+        # given
+        cparser = Cparser()
+        parser = yacc.yacc(module=cparser)
+        ast = parser.parse(test_input, lexer=cparser.scanner)
+
+        # when
+        with capture() as outstream:
+            TypeChecker().visit(ast)
+            actual = outstream.getvalue()
+
+        # then
+        self.assertEqual(expected.strip(), actual.strip())
+    return test
+
 def generate_tests(path):
     for root, dirs, files in os.walk(path):
         for filename in files:
@@ -38,21 +54,7 @@ def generate_tests(path):
                 test_input = read_file(test_file_path)
                 expected = read_file(expected_file_path)
 
-                def test(self):
-                    # given
-                    cparser = Cparser()
-                    parser = yacc.yacc(module=cparser)
-                    ast = parser.parse(test_input, lexer=cparser.scanner)
-
-                    # when
-                    with capture() as outstream:
-                        TypeChecker().visit(ast)
-                        actual = outstream.getvalue()
-
-                    # then
-                    self.assertEqual(expected, actual)
-
-                setattr(ErrorsTest, test_name, test)
+                setattr(ErrorsTest, test_name, generate_test_function(test_input, expected))
 
 
 generate_tests("tests_err")

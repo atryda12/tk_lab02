@@ -92,7 +92,7 @@ class Cparser(object):
 
     def p_labeled_instr(self, p):
         """labeled_instr : ID ':' instruction """
-        p[0] = AST.LabeledInstruction(p[1], p[3])
+        p[0] = AST.LabeledInstruction(p[1], p[3], p.lineno(1))
 
     def p_assignment(self, p):
         """assignment : ID '=' expression ';' """
@@ -140,8 +140,8 @@ class Cparser(object):
         p[0] = p[1]
 
     def p_const(self, p):
-        """const : integer
-                 | float
+        """const : float
+                 | integer
                  | string"""
         p[0] = p[1]
 
@@ -189,9 +189,9 @@ class Cparser(object):
         elif len(p) == 4 and p[1] == '(':
             p[0] = p[2]
         elif len(p) == 4:
-            p[0] = AST.BinExpr(p[2], p[1], p[3], p.lineno(1))
+            p[0] = AST.BinExpr(p[2], p[1], p[3], p.lineno(2))
         else:
-            p[0] = AST.JustID(p[1]) if type(p[1]) is str else p[1]
+            p[0] = AST.JustID(p[1], p.lineno(1)) if type(p[1]) is str else p[1]
 
     def p_expr_list_or_empty(self, p):
         """expr_list_or_empty : expr_list
@@ -219,4 +219,4 @@ class Cparser(object):
 
     def p_arg(self, p):
         """arg : TYPE ID """
-        p[0] = AST.FunctionArgument(p[1], p[2])
+        p[0] = AST.FunctionArgument(p[1], p[2], p.lineno(1))

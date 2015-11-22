@@ -12,16 +12,13 @@ class VariableSymbol(Symbol):
     def __init__(self, name, type):
         super(VariableSymbol, self).__init__(name, type)
 
-    def accept(self, visitor):
-        return visitor.visit(self)
-
 
 class FunctionSymbol(Symbol):
     def __init__(self, name, type):
         super(FunctionSymbol, self).__init__(name, type)
         self.arguments = []
 
-    def addArgument(self, arg):
+    def add_argument(self, arg):
         self.arguments.append(arg)
 
 
@@ -43,8 +40,12 @@ class SymbolTable(object):
     def putLabel(self, name):
         self.labels.append(name)
 
-    def getLabel(self, name):
-        return name in self.labels
+    def has_label(self, name):
+        if name in self.labels:
+            return True
+        if self.name.startswith("function") or self.parent is None:
+            return False
+        return self.parent.has_label(name)
 
     def getParentScope(self):
         return self.parent
@@ -61,22 +62,19 @@ class SymbolTable(object):
             else:
                 return None
 
-    def isInFunctionScope(self):
-        if self.name.startswith("function"):
+    def get_scope_type(self, scope_type):
+        if self.name == scope_type:
             return self
         else:
             if self.parent is not None:
-                return self.parent.searchFunctionScope()
+                return self.parent.get_scope_type(scope_type)
             else:
                 return None
 
-    def searchLoopScope(self):
-        if self.name.startswith("while") or self.name.startswith("repeat"):
-            return self
-        else:
-            if self.parent is not None:
-                return self.parent.searchFunctionScope()
-            else:
-                return None
+    def get_function_scope(self):
+        return self.get_scope_type("function-scope")
+
+    def get_loop_scope(self):
+        return self.get_scope_type("loop-scope")
 
 

@@ -1,4 +1,4 @@
-
+/*
 int a = 0, b = 0, c = 0;
 
 int gcd(int m, int n) {
@@ -19,12 +19,12 @@ return res;
 int lcm(int a, int b) {
     string s1="",s2="";
     return (a*b) / gcd(s1,s2);
-}
+} */
 
 int fact(int n) {
   string s = "";
   if(n==0) return s;
-  else if(n==1) return 1.0;
+  else if (n==1) return 1.0;
   else return n*fact(n-1);
 }
 

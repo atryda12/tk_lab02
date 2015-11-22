@@ -2,6 +2,9 @@ class Node(object):
     def __str__(self):
         return self.printTree()
 
+    def flatten(self):
+        return []
+
 
 class Program(Node):
     def __init__(self, components):
@@ -29,9 +32,13 @@ class PrintInstruction(Node):
 
 
 class LabeledInstruction(Node):
-    def __init__(self, label, instruction):
+    def __init__(self, label, instruction, lineno):
         self.label = label
         self.instruction = instruction
+        self.lineno = lineno
+
+    def flatten(self):
+        return self.instruction.flatten()
 
 
 class Assignment(Node):
@@ -47,11 +54,25 @@ class ChoiceInstruction(Node):
         self.if_instruction = if_instr
         self.else_instruction = else_instr
 
+    def flatten(self):
+        if_flattened = self.if_instruction.flatten()
+        else_flattened = self.else_instruction.flatten() if self.else_instruction else None
+        if isinstance(if_flattened, list) and isinstance(else_flattened, list):
+            return if_flattened + else_flattened
+        if isinstance(if_flattened, list):
+            if_flattened.append(else_flattened)
+            return if_flattened
+        return [if_flattened, else_flattened]
+
 
 class WhileInstruction(Node):
     def __init__(self, condition, instr):
         self.condition = condition
         self.instruction = instr
+        self.children = instr
+
+    def flatten(self):
+        return self.instruction.flatten()
 
 
 class RepeatInstruction(Node):
@@ -59,11 +80,17 @@ class RepeatInstruction(Node):
         self.condition = condition
         self.instructions = instructions
 
+    def flatten(self):
+        return [i.flatten for i in self.instructions]
+
 
 class ReturnInstruction(Node):
     def __init__(self, expression, lineno):
         self.expression = expression
         self.lineno = lineno
+
+    def flatten(self):
+        return [self]
 
 
 class ContinueInstruction(Node):
@@ -92,8 +119,9 @@ class FunctionCall(Node):
 
 
 class JustID(Node):
-    def __init__(self, identifier):
+    def __init__(self, identifier, lineno):
         self.identifier = identifier
+        self.lineno = lineno;
 
 
 class FunctionDefinition(Node):
@@ -106,9 +134,10 @@ class FunctionDefinition(Node):
 
 
 class FunctionArgument(Node):
-    def __init__(self, argument_type, argument):
+    def __init__(self, argument_type, argument, lineno):
         self.argument_type = argument_type
         self.argument = argument
+        self.lineno = lineno
 
 
 class Const(Node):
@@ -131,9 +160,25 @@ class String(Const):
         super(String, self).__init__(value)
 
 
+def flatten(item):
+    if not isinstance(item, list):
+        return [item]
+    flattened = []
+    for x in item:
+        if x:
+            for y in flatten(x):
+                flattened.append(y)
+    return flattened
+
+
 class CompoundInstruction(Node):
     def __init__(self, instructions, end_lineno):
         self.instructions = instructions
         self.children = instructions
         self.end_lineno = end_lineno
+
+    def flatten(self):
+        nested = [i.flatten() for i in self.instructions]
+        flattened = flatten(nested)
+        return list(filter(lambda x: isinstance(x, ReturnInstruction), flattened))
 
