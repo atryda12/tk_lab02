@@ -50,12 +50,9 @@ class SymbolTable(object):
     def getParentScope(self):
         return self.parent
 
-    def searchInCurrentScope(self, name):
-        return self.entry.get(name)
-
     def searchInScopes(self, name):
-        if self.entry.get(name) is not None:
-            return self.entry.get(name)
+        if self.get(name) is not None:
+            return self.get(name)
         else:
             if self.parent is not None:
                 return self.parent.searchInScopes(name)
@@ -71,10 +68,10 @@ class SymbolTable(object):
             else:
                 return None
 
-    def get_function_scope(self):
+    def get_current_function_scope(self):
         return self.get_scope_type("function-scope")
 
-    def get_loop_scope(self):
+    def get_current_loop_scope(self):
         return self.get_scope_type("loop-scope")
 
 

@@ -66,7 +66,7 @@ class TypeChecker(NodeVisitor):
 
     def log_precision_loss_if_needed(self, type1, type2, lineno):
         if type1 == 'int' and type2 == 'float':
-            print("Warning: possible percision loss: assigning float to int: line {}".format(lineno))
+            print("Warning: possible precision loss: assigning float to int: line {}".format(lineno))
 
     def enter_scope(self, new_scope_name):
         self.symbol_table = SymbolTable(self.symbol_table, new_scope_name)
@@ -147,7 +147,7 @@ class TypeChecker(NodeVisitor):
         self.leave_scope()
 
     def visit_ReturnInstruction(self, node):
-        function_scope = self.symbol_table.get_function_scope()
+        function_scope = self.symbol_table.get_current_function_scope()
         if function_scope is None:
             self.log_error("return instruction outside a function", node.lineno)
         else:
@@ -161,7 +161,7 @@ class TypeChecker(NodeVisitor):
                     self.log_precision_loss_if_needed(function_type, return_type, node.lineno)
 
     def visit_loop_instruction(self, instruction, lineno):
-        if self.symbol_table.get_loop_scope() is None:
+        if self.symbol_table.get_current_loop_scope() is None:
             message = "{} instruction outside a loop".format(instruction)
             self.log_error(message, lineno)
 
@@ -214,7 +214,7 @@ class TypeChecker(NodeVisitor):
             self.leave_scope()
 
     def visit_FunctionArgument(self, node):
-        if self.symbol_table.searchInCurrentScope(node.argument) is not None:
+        if self.symbol_table.get(node.argument) is not None:
             self.log_error("Redefinition of an argument {0}.".format(node.argument), node.lineno)
         else:
             self.symbol_table.put(node.argument, VariableSymbol(node.argument, node.argument_type))

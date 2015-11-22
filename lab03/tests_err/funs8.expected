@@ -3,7 +3,7 @@ Error: Improper number of args in gcd call: line 9
 Error: Improper number of args in gcd call: line 11
 Error: Improper type of args in gcd call: line 21
 Error: Improper returned type, expected int, got string: line 26
-Warning: possible percision loss: assigning float to int: line 27
+Warning: possible precision loss: assigning float to int: line 27
 Error: Call of undefined function: 'nbonacci': line 32
 Error: Redefinition of function 'trib': line 35
 Error: Function identifier 'pow' used as a variable: line 49

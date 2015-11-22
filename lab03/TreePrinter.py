@@ -90,6 +90,15 @@ class TreePrinter:
         output_string += indent(self.expression)
         return output_string
 
+    @addToClass(AST.ContinueInstruction)
+    def printTree(self):
+        output_string = "CONTINUE\n"
+        return output_string
+
+    @addToClass(AST.BreakInstruction)
+    def printTree(self):
+        output_string = "BREAK\n"
+        return output_string
 
     @addToClass(AST.BinExpr)
     def printTree(self):
