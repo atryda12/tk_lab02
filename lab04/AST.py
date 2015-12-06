@@ -5,6 +5,9 @@ class Node(object):
     def flatten(self):
         return []
 
+    def accept(self, visitor):
+        return visitor.visit(self)
+
 
 class Program(Node):
     def __init__(self, components):

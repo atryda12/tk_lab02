@@ -1,9 +1,10 @@
 import sys
 import ply.yacc as yacc
-from lab03.Cparser import Cparser
+from lab04.Cparser import Cparser
 # required for printing to work
-from lab03.TreePrinter import TreePrinter
-from lab03.TypeChecker import TypeChecker
+from lab04.TreePrinter import TreePrinter
+from lab04.TypeChecker import TypeChecker
+from lab04.Interpreter import Interpreter
 
 if __name__ == '__main__':
 
@@ -22,3 +23,5 @@ if __name__ == '__main__':
     print(str(ast))
     typeChecker = TypeChecker()
     typeChecker.visit(ast)   # or alternatively ast.accept(typeChecker)
+
+    ast.accept(Interpreter())
