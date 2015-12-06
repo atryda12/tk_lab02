@@ -33,7 +33,8 @@ class AcceptanceTests(unittest.TestCase):
                 elif filename.endswith('.in'):
                     cls.add_test(dirpath, filename)
 
+AcceptanceTests.add_tests('./tests/')
+
 if __name__ == '__main__':
     print("STARTING")
-    AcceptanceTests.add_tests('./tests/')
     unittest.main()

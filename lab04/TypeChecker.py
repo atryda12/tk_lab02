@@ -240,3 +240,8 @@ class TypeChecker(NodeVisitor):
                     self.log_precision_loss_if_needed(arg_type, given_type, node.lineno)
         return None if definition is None else definition.type
 
+    def visit_CompondInstruction(self, node):
+        self.enter_scope("compound-instr_scope")
+        self.visit(node.instructions)
+        self.leave_scope()
+

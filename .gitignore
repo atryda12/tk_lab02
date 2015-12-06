@@ -1,3 +1,6 @@
+#lousy tests leaving fles after them
+**/*.actual
+
 # idea files
 **/*.iml
 .idea
