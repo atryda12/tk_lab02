@@ -22,7 +22,7 @@ class MemoryStack:
             self.push(memory)
 
     def get(self, name):         # gets from memory stack current value of variable <name>
-        return self.memoryStack[-1][name]
+        return self.memoryStack[-1].get(name)
 
     def insert(self, name, value):  # inserts into memory stack variable <name> with value <value>
         self.memoryStack[-1].put(name, value)

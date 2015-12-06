@@ -7,6 +7,7 @@ __all__ = ['on', 'when']
 
 
 def on(param_name):
+
     def f(fn):
         dispatcher = Dispatcher(param_name, fn)
         return dispatcher
@@ -21,7 +22,7 @@ def when(param_type):
     # dispatcher is an function object
     def f(fn):
         frame = inspect.currentframe().f_back
-        dispatcher = frame.f_locals[fn.func_name]
+        dispatcher = frame.f_locals[fn.__name__]
         if not isinstance(dispatcher, Dispatcher):
             dispatcher = dispatcher.dispatcher
         dispatcher.add_target(param_type, fn)
@@ -31,7 +32,6 @@ def when(param_type):
 
         ff.dispatcher = dispatcher
         return ff
-
     return f
 
 
@@ -50,8 +50,7 @@ class Dispatcher(object):
             return d(*args, **kw)
         else:
             t = self.targets
-            ks = t.iterkeys()
-            return [t[k](*args, **kw) for k in ks if issubclass(type, k)]
+            return [t[k](*args, **kw) for k in t.keys() if issubclass(type, k)]
 
     def add_target(self, type, target):
         self.targets[type] = target

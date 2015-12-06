@@ -1,6 +1,6 @@
 class Node(object):
-    def __str__(self):
-        return self.printTree()
+    # def __str__(self):
+    #     return self.printTree()
 
     def flatten(self):
         return []
@@ -184,4 +184,3 @@ class CompoundInstruction(Node):
         nested = [i.flatten() for i in self.instructions]
         flattened = flatten(nested)
         return list(filter(lambda x: isinstance(x, ReturnInstruction), flattened))
-

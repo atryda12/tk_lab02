@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+import ply.yacc as yacc
+
 import filecmp
 import unittest
 import os
@@ -33,7 +36,7 @@ class AcceptanceTests(unittest.TestCase):
                 elif filename.endswith('.in'):
                     cls.add_test(dirpath, filename)
 
-AcceptanceTests.add_tests('./tests/')
+AcceptanceTests.add_tests('tests/')
 
 if __name__ == '__main__':
     print("STARTING")
