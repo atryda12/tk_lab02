@@ -16,7 +16,7 @@ class Memory:
 
 class MemoryStack:
                                                                              
-    def __init__(self, memory=None): # initialize memory stack with memory <memory>
+    def __init__(self, memory=None):  # initialize memory stack with memory <memory>
         self.memoryStack = list()
         if memory is not None:
             self.push(memory)

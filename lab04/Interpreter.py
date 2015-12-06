@@ -43,7 +43,7 @@ class Interpreter(object):
             expression_value = int(expression_value)
         elif self.declaredType == "float":
             # TODO jesli zainicjalizujemy float a = 1;
-            # TODO to tworzony jeast obiekt AST.Integer, a nie AST.Float
+            # TODO to tworzony jest obiekt AST.Integer, a nie AST.Float
             expression_value = float(expression_value)
 
         memory.insert(variable_name, expression_value)
@@ -71,8 +71,9 @@ class Interpreter(object):
 
     @when(AST.ChoiceInstruction)
     def visit(self, node):
+
         if node.condition.accept(self):
-            node.instruction.accept(self)
+            node.if_instruction.accept(self)
         elif node.else_instruction is not None:
             node.else_instruction.accept(self)
 
@@ -125,7 +126,9 @@ class Interpreter(object):
         left = node.left.accept(self)
         right = node.right.accept(self)
         return self.evaluator(node.op, left, right)
-    
+
+    # TODO functioncall,
+
     # @when(AST.RelOp)
     # def visit(self, node):
     #     r1 = node.left.accept(self)
@@ -157,6 +160,10 @@ class Interpreter(object):
         else:
             return self.globalMemory.get(node.identifier)
 
+    # TODO function definition
+    # TODO function argument
+
+
     @when(AST.Integer)
     def visit(self, node):
         return int(node.value)
@@ -167,4 +174,9 @@ class Interpreter(object):
 
     @when(AST.String)
     def visit(self, node):
-        return node.value
+        return str(node.value).strip('"')
+
+    @when(AST.CompoundInstruction)
+    def visit(self, node):
+        for instruction in node.instructions:
+            instruction.accept(self)
