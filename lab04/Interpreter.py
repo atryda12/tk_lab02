@@ -91,7 +91,7 @@ class Interpreter(object):
         memory = self.determine_memory_scope()
         memory.push(Memory("repeat_loop_memory_scope"))
         cond = True
-        
+
         while cond:
             for instruction in node.instructions:
                 try:
@@ -131,7 +131,6 @@ class Interpreter(object):
 
     @when(AST.FunctionCall)
     def visit(self, node):
-        # TODO stack overflow when too many recursive calls
 
         function_name = node.function_name
         new_memory = Memory("function_" + function_name + "_memory_scope")
