@@ -101,7 +101,7 @@ class Interpreter(object):
                 try:
                     instruction.accept(self)
                 except ContinueException:
-                    memory.pop()
+                    # memory.pop()
                     continue
                 except BreakException:
                     memory.pop()
@@ -201,13 +201,13 @@ class Interpreter(object):
                 instruction.accept(self)
             except BreakException as e:
                 memory.pop()
-                return e
+                raise e
             except ContinueException as e:
                 memory.pop()
-                return e
+                raise e
             except ReturnValueException as e:
                 memory.pop()
-                return e.value
+                raise e
 
         memory.pop()
 
