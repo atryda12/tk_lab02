@@ -6,7 +6,7 @@ itera = 0
 def step(c, div, mul, add):
     if c % 2 == 0:
         print("{}\t{}\t{}".format(c/div, int(c/div), c//div))
-        return int(c / div)
+        return int(c // div)
     else:
         return mul * c + add
 

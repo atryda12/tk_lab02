@@ -21,8 +21,6 @@ class Interpreter(object):
     def visit(self, node):
         pass
 
-    # TODO implement visit methods for all classes from AST
-
     @when(AST.Program)
     def visit(self, node):
         for component in node.components:
@@ -42,8 +40,6 @@ class Interpreter(object):
         if self.declaredType == "int":
             expression_value = int(expression_value)
         elif self.declaredType == "float":
-            # TODO jesli zainicjalizujemy float a = 1;
-            # TODO to tworzony jest obiekt AST.Integer, a nie AST.Float
             expression_value = float(expression_value)
 
         memory.insert(variable_name, expression_value)
@@ -101,7 +97,6 @@ class Interpreter(object):
                 try:
                     instruction.accept(self)
                 except ContinueException:
-                    # memory.pop()
                     continue
                 except BreakException:
                     memory.pop()
@@ -130,6 +125,8 @@ class Interpreter(object):
     def visit(self, node):
         left = node.left.accept(self)
         right = node.right.accept(self)
+        if node.op == "/" and isinstance(left, int) and isinstance(right, int):
+            return left // right
         return self.evaluator(node.op, left, right)
 
     @when(AST.FunctionCall)
