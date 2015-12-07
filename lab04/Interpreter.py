@@ -157,7 +157,7 @@ class Interpreter(object):
             self.functionMemory.pop()
             if len(self.functionMemory.memoryStack) == 0:
                 self.inFunctionScope = False
-            return e.value
+            return self.cast(function_definition.return_type, e.value)
 
         self.functionMemory.pop()
         if len(self.functionMemory.memoryStack) == 0:
