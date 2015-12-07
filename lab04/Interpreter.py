@@ -11,8 +11,8 @@ sys.setrecursionlimit(10000)
 
 class Interpreter(object):
     def __init__(self):
-        self.globalMemory = MemoryStack(Memory("Global Memory"))
-        self.functionMemory = MemoryStack(Memory("Function Memory"))
+        self.globalMemory = MemoryStack(Memory("global_memory"))
+        self.functionMemory = MemoryStack(Memory("function_memory"))
         self.inFunctionScope = False
         self.declaredType = None
         self.evaluator = Evaluator()
@@ -152,5 +152,11 @@ class Interpreter(object):
 
     @when(AST.CompoundInstruction)
     def visit(self, node):
+        memory = self.choose_memory_scope()
+        memory.push(Memory("compound_instr_memory"))
         for instruction in node.instructions:
             instruction.accept(self)
+        memory.pop()
+
+    def choose_memory_scope(self):
+        return self.functionMemory if self.inFunctionScope else self.globalMemory
