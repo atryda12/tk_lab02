@@ -96,7 +96,6 @@ class Interpreter(object):
         
         while cond:
             for instruction in node.instructions:
-                print("INSTR: ", instruction)
                 try:
                     instruction.accept(self)
                 except ContinueException:
@@ -129,30 +128,6 @@ class Interpreter(object):
 
     # TODO functioncall,
 
-    # @when(AST.RelOp)
-    # def visit(self, node):
-    #     r1 = node.left.accept(self)
-    #     r2 = node.right.accept(self)
-    #     # ...
-    #
-    # @when(AST.Assignment)
-    # def visit(self, node):
-    #     pass
-    #
-    # @when(AST.Const)
-    # def visit(self, node):
-    #     return node.value
-    #
-    # # simplistic while loop interpretation
-    # @when(AST.WhileInstr)
-    # def visit(self, node):
-    #     r = None
-    #     while node.cond.accept(self):
-    #         r = node.body.accept(self)
-    #     return r
-    #
-    #
-
     @when(AST.JustID)
     def visit(self, node):
         if self.inFunctionScope:
@@ -162,7 +137,6 @@ class Interpreter(object):
 
     # TODO function definition
     # TODO function argument
-
 
     @when(AST.Integer)
     def visit(self, node):
