@@ -12,7 +12,7 @@ sys.setrecursionlimit(10000)
 class Interpreter(object):
     def __init__(self):
         self.globalMemory = MemoryStack(Memory("global_memory_scope"))
-        self.functionMemory = MemoryStack(Memory("function_memory_scope"))
+        self.functionMemory = MemoryStack()
         self.inFunctionScope = False
         self.declaredType = None
         self.evaluator = Evaluator()
@@ -38,7 +38,7 @@ class Interpreter(object):
     def visit(self, node):
         variable_name = node.name
         expression_value = node.expression.accept(self)
-        memory = self.functionMemory if self.inFunctionScope else self.globalMemory
+        memory = self.determine_memory_scope()
         if self.declaredType == "int":
             expression_value = int(expression_value)
         elif self.declaredType == "float":
@@ -62,7 +62,7 @@ class Interpreter(object):
     def visit(self, node):
         variable_name = node.name
         expression_value = node.expression.accept(self)
-        memory = self.functionMemory if self.inFunctionScope else self.globalMemory
+        memory = self.determine_memory_scope()
         # casting is performed to ensure that new value matches the declared type
         expression_value = type(memory.get(variable_name))(expression_value)
         memory.set(variable_name, expression_value)
@@ -101,10 +101,13 @@ class Interpreter(object):
                 try:
                     instruction.accept(self)
                 except ContinueException:
+                    memory.pop()
                     continue
                 except BreakException:
+                    memory.pop()
                     break
                 except ReturnValueException as e:
+                    memory.pop()
                     return e.value
 
                 if node.condition.accept(self):
@@ -129,7 +132,37 @@ class Interpreter(object):
         right = node.right.accept(self)
         return self.evaluator(node.op, left, right)
 
-    # TODO functioncall,
+    @when(AST.FunctionCall)
+    def visit(self, node):
+        # TODO stack overflow when too many recursive calls
+
+        function_name = node.function_name
+        new_memory = Memory("function_" + function_name + "_memory_scope")
+
+        function_definition = self.globalMemory.get(function_name)
+
+        for i in range(0, len(node.arguments)):
+            accepted_def_arg = function_definition.arguments[i].accept(self)
+            accepted_call_arg = node.arguments[i].accept(self)
+            type = accepted_def_arg['arg_type']
+            name = accepted_def_arg['arg_name']
+            new_memory.put(name, self.cast(type, accepted_call_arg))
+
+        self.inFunctionScope = True
+        self.functionMemory.push(new_memory)
+
+        try:
+            return_val = function_definition.compound_instr.accept(self)
+        except ReturnValueException as e:
+            self.functionMemory.pop()
+            if len(self.functionMemory.memoryStack) == 0:
+                self.inFunctionScope = False
+            return e.value
+
+        self.functionMemory.pop()
+        if len(self.functionMemory.memoryStack) == 0:
+            self.inFunctionScope = False
+        return return_val
 
     @when(AST.JustID)
     def visit(self, node):
@@ -138,8 +171,13 @@ class Interpreter(object):
         else:
             return self.globalMemory.get(node.identifier)
 
-    # TODO function definition
-    # TODO function argument
+    @when(AST.FunctionDefinition)
+    def visit(self, node):
+        self.globalMemory.insert(node.function_name, node)
+
+    @when(AST.FunctionArgument)
+    def visit(self, node):
+        return {'arg_name': node.argument, 'arg_type': node.argument_type}
 
     @when(AST.Integer)
     def visit(self, node):
@@ -157,9 +195,29 @@ class Interpreter(object):
     def visit(self, node):
         memory = self.determine_memory_scope()
         memory.push(Memory("compound_instr_memory_scope"))
+
         for instruction in node.instructions:
-            instruction.accept(self)
+            try:
+                instruction.accept(self)
+            except BreakException as e:
+                memory.pop()
+                return e
+            except ContinueException as e:
+                memory.pop()
+                return e
+            except ReturnValueException as e:
+                memory.pop()
+                return e.value
+
         memory.pop()
 
     def determine_memory_scope(self):
         return self.functionMemory if self.inFunctionScope else self.globalMemory
+
+    def cast(self, type_str, val):
+        if type_str == "int":
+            return int(val)
+        elif type_str == "float":
+            return float(val)
+        else:
+            return str(val)
